@@ -61,63 +61,89 @@ const Index = () => {
   };
 
   return (
-    <Box maxWidth="400px" mx="auto" p={4}>
-      <Heading as="h1" size="xl" textAlign="center" mb={8}>
-        Liar's Dice
-      </Heading>
-      {playerDice.length === 0 ? (
-        <Button leftIcon={<FaDice />} colorScheme="blue" size="lg" onClick={rollDice}>
-          Roll Dice
-        </Button>
-      ) : (
-        <VStack spacing={8}>
-          <Text fontSize="xl" fontWeight="bold">
-            Your Dice: {playerDice.join(", ")}
-          </Text>
-          <Text fontSize="xl" fontWeight="bold">
-            Computer Dice: {gameOver ? computerDice.join(", ") : "Hidden"}
-          </Text>
-          {gameOver && (
-            <Text fontSize="xl" fontWeight="bold">
-              Computer's Bid: {computerBid.quantity} x {computerBid.value}
-            </Text>
-          )}
-          {!gameOver && (
-            <>
-              <HStack>
-                <Select value={playerBid.quantity} onChange={handleQuantityChange}>
-                  {[...Array(10)].map((_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  ))}
-                </Select>
-                <Select value={playerBid.value} onChange={handleValueChange}>
-                  {[...Array(6)].map((_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  ))}
-                </Select>
-              </HStack>
-              <Button colorScheme="green" size="lg" onClick={handleBid}>
-                Place Bid
-              </Button>
-            </>
-          )}
-          {gameOver && (
-            <>
-              <Text fontSize="2xl" fontWeight="bold">
-                {winner} wins!
+    <>
+      <>
+        <Box maxWidth="400px" mx="auto" p={4}>
+          <Heading as="h1" size="xl" textAlign="center" mb={8}>
+            Liar's Dice
+          </Heading>
+          {playerDice.length === 0 ? (
+            <Button leftIcon={<FaDice />} colorScheme="blue" size="lg" onClick={rollDice}>
+              Roll Dice
+            </Button>
+          ) : (
+            <VStack spacing={8}>
+              <Text fontSize="xl" fontWeight="bold">
+                Your Dice: {playerDice.join(", ")}
               </Text>
-              <Button colorScheme="blue" size="lg" onClick={handlePlayAgain}>
-                Play Again
-              </Button>
-            </>
+              <Text fontSize="xl" fontWeight="bold">
+                Computer Dice: {gameOver ? computerDice.join(", ") : "Hidden"}
+              </Text>
+              {gameOver && (
+                <Text fontSize="xl" fontWeight="bold">
+                  Computer's Bid: {computerBid.quantity} x {computerBid.value}
+                </Text>
+              )}
+              {!gameOver && (
+                <>
+                  <HStack>
+                    <Select value={playerBid.quantity} onChange={handleQuantityChange}>
+                      {[...Array(10)].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </Select>
+                    <Select value={playerBid.value} onChange={handleValueChange}>
+                      {[...Array(6)].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </Select>
+                  </HStack>
+                  <Button colorScheme="green" size="lg" onClick={handleBid}>
+                    Place Bid
+                  </Button>
+                </>
+              )}
+              {gameOver && (
+                <>
+                  <Text fontSize="2xl" fontWeight="bold">
+                    {winner} wins!
+                  </Text>
+                  <Button colorScheme="blue" size="lg" onClick={handlePlayAgain}>
+                    Play Again
+                  </Button>
+                </>
+              )}
+            </VStack>
           )}
-        </VStack>
-      )}
-    </Box>
+        </Box>
+        <Box mt={8} p={4} bg="gray.100" borderRadius="md">
+          <Heading as="h2" size="lg" mb={4}>
+            Rules
+          </Heading>
+          <Text mb={2}>1. Each player starts with five dice.</Text>
+          <Text mb={2}>2. Players take turns bidding on the total number of a specific face value that are showing among all the dice on the table.</Text>
+          <Text mb={2}>3. Each bid must be higher than the previous bid, either in quantity or face value.</Text>
+          <Text mb={2}>4. If a player believes the previous bid was too high, they can challenge by saying "Liar!"</Text>
+          <Text mb={2}>5. All dice are then revealed. If the bid was too high, the bidder loses. If not, the challenger loses.</Text>
+          <Text>6. The game continues until only one player has dice remaining.</Text>
+        </Box>
+      </>
+      <Box mt={8} p={4} bg="gray.100" borderRadius="md">
+        <Heading as="h2" size="lg" mb={4}>
+          Rules
+        </Heading>
+        <Text mb={2}>1. Each player starts with five dice.</Text>
+        <Text mb={2}>2. Players take turns bidding on the total number of a specific face value that are showing among all the dice on the table.</Text>
+        <Text mb={2}>3. Each bid must be higher than the previous bid, either in quantity or face value.</Text>
+        <Text mb={2}>4. If a player believes the previous bid was too high, they can challenge by saying "Liar!"</Text>
+        <Text mb={2}>5. All dice are then revealed. If the bid was too high, the bidder loses. If not, the challenger loses.</Text>
+        <Text>6. The game continues until only one player has dice remaining.</Text>
+      </Box>
+    </>
   );
 };
 
