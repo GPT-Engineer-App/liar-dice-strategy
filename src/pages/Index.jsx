@@ -6,6 +6,7 @@ const Index = () => {
   const [playerDice, setPlayerDice] = useState([]);
   const [computerDice, setComputerDice] = useState([]);
   const [playerBid, setPlayerBid] = useState({ quantity: 1, value: 1 });
+  const [computerBid, setComputerBid] = useState({ quantity: 1, value: 1 });
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState(null);
   const toast = useToast();
@@ -29,6 +30,7 @@ const Index = () => {
     } else {
       const newQuantity = Math.floor(Math.random() * 5) + 1;
       const newValue = Math.floor(Math.random() * 6) + 1;
+      setComputerBid({ quantity: newQuantity, value: newValue });
       setPlayerBid({ quantity: newQuantity, value: newValue });
       setWinner("Player");
     }
@@ -75,6 +77,11 @@ const Index = () => {
           <Text fontSize="xl" fontWeight="bold">
             Computer Dice: {gameOver ? computerDice.join(", ") : "Hidden"}
           </Text>
+          {gameOver && (
+            <Text fontSize="xl" fontWeight="bold">
+              Computer's Bid: {computerBid.quantity} x {computerBid.value}
+            </Text>
+          )}
           {!gameOver && (
             <>
               <HStack>
