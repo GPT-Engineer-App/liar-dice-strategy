@@ -133,7 +133,6 @@ const Index = () => {
           <Text>6. The game continues until only one player has dice remaining.</Text>
         </Box>
       </>
-      <Rules />
     </>
   );
 };
