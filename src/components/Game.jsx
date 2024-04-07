@@ -112,50 +112,12 @@ const Game = () => {
               Computer's Bid: {computerBid.quantity} x {computerBid.value}
             </Text>
           )}
-          {!gameOver && (
-            <>
-              <HStack>
-                <Select value={playerBid.quantity} onChange={handleQuantityChange}>
-                  {[...Array(10)].map((_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  ))}
-                </Select>
-                <Select value={playerBid.value} onChange={handleValueChange}>
-                  {[...Array(6)].map((_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  ))}
-                </Select>
-              </HStack>
-              <Button colorScheme="green" size="lg" onClick={handleBid}>
-                Place Bid
-              </Button>
-            </>
-          )}
+
           <Text fontSize="xl" fontWeight="bold" mb={4}>
             {gameStatus}
           </Text>
           {!gameOver && currentPlayer === "Player" && (
             <>
-              <HStack>
-                <Select value={playerBid.quantity} onChange={handleQuantityChange}>
-                  {[...Array(10)].map((_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  ))}
-                </Select>
-                <Select value={playerBid.value} onChange={handleValueChange}>
-                  {[...Array(6)].map((_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  ))}
-                </Select>
-              </HStack>
               <Button colorScheme="green" size="lg" onClick={handleBid} mb={4}>
                 Place Bid
               </Button>
