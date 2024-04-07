@@ -46,8 +46,20 @@ const Game = () => {
     setGameStatus("Computer is bidding...");
 
     setTimeout(() => {
-      const newQuantity = Math.floor(Math.random() * 5) + 1;
-      const newValue = Math.floor(Math.random() * 6) + 1;
+      const playerLastBid = { ...playerBid };
+      let newQuantity = playerLastBid.quantity;
+      let newValue = playerLastBid.value;
+
+      if (Math.random() < 0.5) {
+        newQuantity++;
+      } else {
+        newValue++;
+        if (newValue > 6) {
+          newValue = 1;
+          newQuantity++;
+        }
+      }
+
       const computerBid = { player: "Computer", quantity: newQuantity, value: newValue };
       setAllBids((prevBids) => [...prevBids, { player: "Player", ...playerBid }, computerBid]);
       setPlayerBid({ quantity: 1, value: 1 });
