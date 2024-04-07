@@ -43,22 +43,34 @@ const Game = () => {
     }
 
     setAllBids([...allBids, { player: "Player", ...playerBid }]);
+    setPlayerBid({ quantity: 1, value: 1 });
     setCurrentPlayer("Computer");
     setGameStatus("Computer is bidding...");
 
     setTimeout(() => {
       const newQuantity = Math.floor(Math.random() * 5) + 1;
       const newValue = Math.floor(Math.random() * 6) + 1;
-      const computerBid = { quantity: newQuantity, value: newValue };
-      setAllBids([...allBids, { player: "Computer", ...computerBid }]);
+      const computerBid = { player: "Computer", quantity: newQuantity, value: newValue };
+      setAllBids([...allBids, computerBid]);
       setCurrentPlayer("Player");
       setGameStatus("Player's turn to bid");
     }, 1500);
   };
 
   const handleBluffCall = () => {
+    if (allBids.length === 0) {
+      toast({
+        title: "No Bids Placed",
+        description: "Cannot call bluff before any bids are placed",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      return;
+    }
+
     const totalDice = [...playerDice, ...computerDice];
-    const lastBid = allBids[allBids.length - 1] || { quantity: 0, value: 0 };
+    const lastBid = allBids[allBids.length - 1];
     const { quantity, value } = lastBid;
     const count = totalDice.filter((dice) => dice === value).length;
 
@@ -110,9 +122,9 @@ const Game = () => {
           <Text fontSize="xl" fontWeight="bold">
             Computer Dice: {gameOver ? computerDice.join(", ") : "Hidden"}
           </Text>
-          {gameOver && (
+          {gameOver && allBids.length > 0 && (
             <Text fontSize="xl" fontWeight="bold">
-              Computer's Last Bid: {lastBid.quantity} x {lastBid.value}
+              Computer's Last Bid: {allBids[allBids.length - 1].quantity} x {allBids[allBids.length - 1].value}
             </Text>
           )}
           {!gameOver && (
