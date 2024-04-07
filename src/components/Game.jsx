@@ -41,7 +41,7 @@ const Game = () => {
       return;
     }
 
-    setComputerBid({ quantity, value });
+    setComputerBid(playerBid);
     setCurrentPlayer("Computer");
     setGameStatus("Computer is bidding...");
 
@@ -145,31 +145,10 @@ const Game = () => {
               Previous Bid: {computerBid.quantity} x {computerBid.value}
             </Text>
           )}
-          {!gameOver && currentPlayer === "Player" && computerBid.quantity > 1 && (
-            <>
-              <HStack>
-                <Select value={playerBid.quantity} onChange={handleQuantityChange}>
-                  {[...Array(10)].map((_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  ))}
-                </Select>
-                <Select value={playerBid.value} onChange={handleValueChange}>
-                  {[...Array(6)].map((_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  ))}
-                </Select>
-              </HStack>
-              <Button colorScheme="green" size="lg" onClick={handleBid} mb={4}>
-                Place Bid
-              </Button>
-              <Button colorScheme="red" size="lg" onClick={handleBluffCall}>
-                Call Bluff
-              </Button>
-            </>
+          {!gameOver && currentPlayer === "Player" && (
+            <Button colorScheme="red" size="lg" onClick={handleBluffCall}>
+              Call Bluff
+            </Button>
           )}
           {gameOver && (
             <>
