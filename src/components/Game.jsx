@@ -42,8 +42,6 @@ const Game = () => {
       return;
     }
 
-    setAllBids([...allBids, { player: "Player", ...playerBid }]);
-    setPlayerBid({ quantity: 1, value: 1 });
     setCurrentPlayer("Computer");
     setGameStatus("Computer is bidding...");
 
@@ -52,6 +50,7 @@ const Game = () => {
       const newValue = Math.floor(Math.random() * 6) + 1;
       const computerBid = { player: "Computer", quantity: newQuantity, value: newValue };
       setAllBids((prevBids) => [...prevBids, { player: "Player", ...playerBid }, computerBid]);
+      setPlayerBid({ quantity: 1, value: 1 });
       setCurrentPlayer("Player");
       setGameStatus("Player's turn to bid");
     }, 1500);
