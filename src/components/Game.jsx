@@ -6,7 +6,7 @@ const Game = () => {
   const [playerDice, setPlayerDice] = useState([]);
   const [computerDice, setComputerDice] = useState([]);
   const [playerBid, setPlayerBid] = useState({ quantity: 1, value: 1 });
-  const [computerBid, setComputerBid] = useState({ quantity: 1, value: 1 });
+  const [allBids, setAllBids] = useState([]);
   const [currentPlayer, setCurrentPlayer] = useState("Player");
   const [gameStatus, setGameStatus] = useState("Player's turn to bid");
   const [gameOver, setGameOver] = useState(false);
@@ -30,7 +30,8 @@ const Game = () => {
   const handleBid = () => {
     const { quantity, value } = playerBid;
 
-    if (quantity <= computerBid.quantity && value <= computerBid.value) {
+    const lastBid = allBids[allBids.length - 1] || { quantity: 0, value: 0 };
+    if (quantity <= lastBid.quantity && value <= lastBid.value) {
       toast({
         title: "Invalid Bid",
         description: "Bid must be higher than previous bid",
@@ -41,14 +42,15 @@ const Game = () => {
       return;
     }
 
-    setComputerBid(playerBid);
+    setAllBids([...allBids, { player: "Player", ...playerBid }]);
     setCurrentPlayer("Computer");
     setGameStatus("Computer is bidding...");
 
     setTimeout(() => {
       const newQuantity = Math.floor(Math.random() * 5) + 1;
       const newValue = Math.floor(Math.random() * 6) + 1;
-      setPlayerBid({ quantity: newQuantity, value: newValue });
+      const computerBid = { quantity: newQuantity, value: newValue };
+      setAllBids([...allBids, { player: "Computer", ...computerBid }]);
       setCurrentPlayer("Player");
       setGameStatus("Player's turn to bid");
     }, 1500);
@@ -56,7 +58,8 @@ const Game = () => {
 
   const handleBluffCall = () => {
     const totalDice = [...playerDice, ...computerDice];
-    const { quantity, value } = computerBid;
+    const lastBid = allBids[allBids.length - 1] || { quantity: 0, value: 0 };
+    const { quantity, value } = lastBid;
     const count = totalDice.filter((dice) => dice === value).length;
 
     if (count >= quantity) {
@@ -79,7 +82,7 @@ const Game = () => {
     setPlayerDice([]);
     setComputerDice([]);
     setPlayerBid({ quantity: 1, value: 1 });
-    setComputerBid({ quantity: 1, value: 1 });
+    setAllBids([]);
     setCurrentPlayer("Player");
     setGameStatus("Player's turn to bid");
     setGameOver(false);
@@ -109,7 +112,7 @@ const Game = () => {
           </Text>
           {gameOver && (
             <Text fontSize="xl" fontWeight="bold">
-              Computer's Bid: {computerBid.quantity} x {computerBid.value}
+              Computer's Last Bid: {lastBid.quantity} x {lastBid.value}
             </Text>
           )}
           {!gameOver && (
@@ -140,10 +143,17 @@ const Game = () => {
               {currentPlayer}'s turn
             </Text>
           </Box>
-          {!gameOver && (
-            <Text fontSize="xl" fontWeight="bold" mb={4}>
-              Previous Bid: {computerBid.quantity} x {computerBid.value}
-            </Text>
+          {!gameOver && allBids.length > 0 && (
+            <Box mb={4}>
+              <Text fontSize="xl" fontWeight="bold" mb={2}>
+                Bid History:
+              </Text>
+              {allBids.map((bid, index) => (
+                <Text key={index} fontSize="lg">
+                  {bid.player}: {bid.quantity} x {bid.value}
+                </Text>
+              ))}
+            </Box>
           )}
           {!gameOver && currentPlayer === "Player" && (
             <Button colorScheme="red" size="lg" onClick={handleBluffCall}>
