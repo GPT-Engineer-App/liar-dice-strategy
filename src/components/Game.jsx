@@ -7,8 +7,15 @@ const Game = () => {
   const [computerDice, setComputerDice] = useState([]);
   const [playerBid, setPlayerBid] = useState({ quantity: 1, value: 1 });
   const [computerBid, setComputerBid] = useState({ quantity: 1, value: 1 });
+  const [currentPlayer, setCurrentPlayer] = useState("Player");
+  const [gameStatus, setGameStatus] = useState("Player's turn to bid");
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState(null);
+
+  const endGame = (winner) => {
+    setGameOver(true);
+    setWinner(winner);
+  };
   const toast = useToast();
 
   const rollDice = () => {
@@ -21,17 +28,40 @@ const Game = () => {
   };
 
   const handleBid = () => {
-    const totalDice = [...playerDice, ...computerDice];
     const { quantity, value } = playerBid;
+
+    if (quantity <= computerBid.quantity && value <= computerBid.value) {
+      toast({
+        title: "Invalid Bid",
+        description: "Bid must be higher than previous bid",
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    setComputerBid({ quantity, value });
+    setCurrentPlayer("Computer");
+    setGameStatus("Computer is bidding...");
+
+    setTimeout(() => {
+      const newQuantity = Math.floor(Math.random() * 5) + 1;
+      const newValue = Math.floor(Math.random() * 6) + 1;
+      setPlayerBid({ quantity: newQuantity, value: newValue });
+      setCurrentPlayer("Player");
+      setGameStatus("Player's turn to bid");
+    }, 1500);
+  };
+
+  const handleBluffCall = () => {
+    const totalDice = [...playerDice, ...computerDice];
+    const { quantity, value } = computerBid;
     const count = totalDice.filter((dice) => dice === value).length;
 
     if (count >= quantity) {
       setWinner("Computer");
     } else {
-      const newQuantity = Math.floor(Math.random() * 5) + 1;
-      const newValue = Math.floor(Math.random() * 6) + 1;
-      setComputerBid({ quantity: newQuantity, value: newValue });
-      setPlayerBid({ quantity: newQuantity, value: newValue });
       setWinner("Player");
     }
     setGameOver(true);
@@ -49,6 +79,9 @@ const Game = () => {
     setPlayerDice([]);
     setComputerDice([]);
     setPlayerBid({ quantity: 1, value: 1 });
+    setComputerBid({ quantity: 1, value: 1 });
+    setCurrentPlayer("Player");
+    setGameStatus("Player's turn to bid");
     setGameOver(false);
     setWinner(null);
     toast({
@@ -102,15 +135,39 @@ const Game = () => {
               </Button>
             </>
           )}
-          {gameOver && (
+          <Text fontSize="xl" fontWeight="bold" mb={4}>
+            {gameStatus}
+          </Text>
+          {!gameOver && currentPlayer === "Player" && (
             <>
-              <Text fontSize="2xl" fontWeight="bold">
-                {winner} wins!
-              </Text>
-              <Button colorScheme="blue" size="lg" onClick={handlePlayAgain}>
-                Play Again
+              <HStack>
+                <Select value={playerBid.quantity} onChange={handleQuantityChange}>
+                  {[...Array(10)].map((_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1}
+                    </option>
+                  ))}
+                </Select>
+                <Select value={playerBid.value} onChange={handleValueChange}>
+                  {[...Array(6)].map((_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1}
+                    </option>
+                  ))}
+                </Select>
+              </HStack>
+              <Button colorScheme="green" size="lg" onClick={handleBid} mb={4}>
+                Place Bid
+              </Button>
+              <Button colorScheme="red" size="lg" onClick={handleBluffCall}>
+                Call Bluff
               </Button>
             </>
+          )}
+          {gameOver && (
+            <Button colorScheme="blue" size="lg" onClick={handlePlayAgain}>
+              Play Again
+            </Button>
           )}
         </VStack>
       )}
