@@ -135,10 +135,17 @@ const Game = () => {
               </Button>
             </>
           )}
-          <Text fontSize="xl" fontWeight="bold" mb={4}>
-            {gameStatus}
-          </Text>
-          {!gameOver && currentPlayer === "Player" && (
+          <Box bg={currentPlayer === "Player" ? "green.500" : "gray.500"} p={4} borderRadius="md" mb={4}>
+            <Text fontSize="xl" fontWeight="bold" color="white">
+              {currentPlayer}'s turn
+            </Text>
+          </Box>
+          {!gameOver && (
+            <Text fontSize="xl" fontWeight="bold" mb={4}>
+              Previous Bid: {computerBid.quantity} x {computerBid.value}
+            </Text>
+          )}
+          {!gameOver && currentPlayer === "Player" && computerBid.quantity > 1 && (
             <>
               <HStack>
                 <Select value={playerBid.quantity} onChange={handleQuantityChange}>
@@ -165,9 +172,14 @@ const Game = () => {
             </>
           )}
           {gameOver && (
-            <Button colorScheme="blue" size="lg" onClick={handlePlayAgain}>
-              Play Again
-            </Button>
+            <>
+              <Text fontSize="2xl" fontWeight="bold" mb={4} color={winner === "Player" ? "green.500" : "red.500"}>
+                {winner} wins!
+              </Text>
+              <Button colorScheme="blue" size="lg" onClick={handlePlayAgain}>
+                Play Again
+              </Button>
+            </>
           )}
         </VStack>
       )}
