@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Text, VStack, HStack, Select, useToast } from "@chakra-ui/react";
+import { Box, Button, Text, VStack, HStack, Select, useToast, FormControl, FormLabel } from "@chakra-ui/react";
 import { FaDice } from "react-icons/fa";
 
 const Game = () => {
@@ -11,6 +11,7 @@ const Game = () => {
   const [gameStatus, setGameStatus] = useState("Player's turn to bid");
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState(null);
+  const [difficulty, setDifficulty] = useState("Easy");
 
   const endGame = (winner) => {
     setGameOver(true);
@@ -46,17 +47,43 @@ const Game = () => {
     setGameStatus("Computer is bidding...");
 
     setTimeout(() => {
-      const playerLastBid = { ...playerBid };
-      let newQuantity = playerLastBid.quantity;
-      let newValue = playerLastBid.value;
+      let newQuantity, newValue;
 
-      if (Math.random() < 0.5) {
-        newQuantity++;
-      } else {
-        newValue++;
-        if (newValue > 6) {
-          newValue = 1;
+      if (difficulty === "Easy") {
+        const playerLastBid = { ...playerBid };
+        newQuantity = playerLastBid.quantity;
+        newValue = playerLastBid.value;
+
+        if (Math.random() < 0.5) {
           newQuantity++;
+        } else {
+          newValue++;
+          if (newValue > 6) {
+            newValue = 1;
+            newQuantity++;
+          }
+        }
+      } else {
+        const totalDice = [...computerDice];
+        const diceCounts = totalDice.reduce((counts, dice) => {
+          counts[dice] = (counts[dice] || 0) + 1;
+          return counts;
+        }, {});
+
+        let maxProbability = 0;
+        for (let i = 1; i <= 6; i++) {
+          const count = diceCounts[i] || 0;
+          const probability = count / totalDice.length;
+          if (probability > maxProbability) {
+            maxProbability = probability;
+            newQuantity = count;
+            newValue = i;
+          }
+        }
+
+        if (maxProbability < 0.5) {
+          newQuantity = Math.floor(Math.random() * 5) + 1;
+          newValue = Math.floor(Math.random() * 6) + 1;
         }
       }
 
@@ -122,9 +149,18 @@ const Game = () => {
   return (
     <Box maxWidth="400px" mx="auto" p={4}>
       {playerDice.length === 0 ? (
-        <Button leftIcon={<FaDice />} colorScheme="blue" size="lg" onClick={rollDice}>
-          Roll Dice
-        </Button>
+        <>
+          <Button leftIcon={<FaDice />} colorScheme="blue" size="lg" onClick={rollDice}>
+            Roll Dice
+          </Button>
+          <FormControl mt={4}>
+            <FormLabel>Difficulty</FormLabel>
+            <Select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+              <option value="Easy">Easy</option>
+              <option value="Hard">Hard</option>
+            </Select>
+          </FormControl>
+        </>
       ) : (
         <VStack spacing={8}>
           <Text fontSize="xl" fontWeight="bold">
